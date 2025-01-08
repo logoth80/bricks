@@ -162,7 +162,12 @@ class Bonus:
         self.rect.y += 3
 
     def draw(self):
-        pygame.draw.rect(screen, GREEN, self.rect)
+        if self.type == "wider":
+            pygame.draw.rect(screen, GREEN, self.rect)
+        elif self.type == "faster":
+            pygame.draw.rect(screen, RED, self.rect)
+        elif self.type == "slowdown":
+            pygame.draw.rect(screen, BLUE, self.rect)
 
 
 # Create bricks
