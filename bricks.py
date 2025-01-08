@@ -168,6 +168,8 @@ class Bonus:
             pygame.draw.rect(screen, RED, self.rect)
         elif self.type == "slowdown":
             pygame.draw.rect(screen, BLUE, self.rect)
+        else:
+            pygame.draw.rect(screen, WHITE, self.rect)
 
 
 # Create bricks
