@@ -31,6 +31,8 @@ BALL_SPEED = 5
 # Bonus dimensions
 BONUS_WIDTH = 20
 BONUS_HEIGHT = 20
+bonus_font = pygame.font.SysFont("Candara", 22, True)
+bonus_font_out = pygame.font.SysFont("Candara", 24)
 
 # Initialize screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -114,10 +116,14 @@ class Ball:
         self.rect = pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, BALL_RADIUS * 2, BALL_RADIUS * 2)
         self.dx = random.choice([-BALL_SPEED, BALL_SPEED])
         self.dy = -BALL_SPEED
+        self.posx = SCREEN_WIDTH / 2
+        self.posy = SCREEN_HEIGHT / 2
 
     def move(self):
-        self.rect.x += self.dx
-        self.rect.y += self.dy
+        self.posx += self.dx
+        self.posy += self.dy
+        self.rect.x = self.posx
+        self.rect.y = self.posy
 
         if self.rect.left <= 0:
             self.dx = abs(self.dx)
@@ -133,9 +139,9 @@ class Ball:
         global BALL_SPEED
         if bonus_type == "slowdown":
             print(f"temp: {bonus_type}")
-            # self.dy = self.dy * 0.5
-            # self.dx = self.dx * 0.5
-            # BALL_SPEED = BALL_SPEED / 2
+            self.dy = self.dy * 0.5
+            self.dx = self.dx * 0.5
+            BALL_SPEED = BALL_SPEED / 2
         elif bonus_type == "killer":
             print(f"Bonus applied: {bonus_type}")
 
@@ -144,9 +150,9 @@ class Ball:
         if bonus_type == "slowdown":
             print(f"temp: {bonus_type}")
 
-            # self.dy = self.dy * 2
-            # self.dx = self.dx * 2
-            # BALL_SPEED = BALL_SPEED * 2
+            self.dy = self.dy * 2
+            self.dx = self.dx * 2
+            BALL_SPEED = BALL_SPEED * 2
         elif bonus_type == "killer":
             print(f"Bonus removed: {bonus_type}")
 
@@ -163,11 +169,20 @@ class Bonus:
 
     def draw(self):
         if self.type == "wider":
-            pygame.draw.rect(screen, GREEN, self.rect)
+            pygame.draw.ellipse(screen, (0, 140, 0), (self.rect[0] - 6, self.rect[1] - 4, self.rect[2] + 12, self.rect[3] + 8))
+            # pygame.draw.rect(screen, (0, 200, 0), self.rect)
+            text_surface = bonus_font.render("W", True, (0, 255, 0))
+            screen.blit(text_surface, (self.rect.centerx - text_surface.get_width() // 2, self.rect.centery - text_surface.get_height() // 2 + 1))
+
         elif self.type == "faster":
-            pygame.draw.rect(screen, RED, self.rect)
+            pygame.draw.ellipse(screen, (140, 0, 0), (self.rect[0] - 6, self.rect[1] - 4, self.rect[2] + 12, self.rect[3] + 8))
+            text_surface = bonus_font.render("M", True, (255, 100, 100))
+            screen.blit(text_surface, (self.rect.centerx - text_surface.get_width() // 2, self.rect.centery - text_surface.get_height() // 2 + 1))
         elif self.type == "slowdown":
-            pygame.draw.rect(screen, BLUE, self.rect)
+            pygame.draw.ellipse(screen, (0, 0, 120), (self.rect[0] - 6, self.rect[1] - 4, self.rect[2] + 12, self.rect[3] + 8))
+            # pygame.draw.rect(screen, BLUE, self.rect)
+            text_surface = bonus_font.render("S", True, (120, 120, 255))
+            screen.blit(text_surface, (self.rect.centerx - text_surface.get_width() // 2 + 1, self.rect.centery - text_surface.get_height() // 2 + 1))
         else:
             pygame.draw.rect(screen, WHITE, self.rect)
 
@@ -243,7 +258,7 @@ while running:
                 ball.dx = abs(ball.dx)
 
             brick.hit()
-            if random.random() < 0.1:  # 10% chance to spawn a bonus
+            if random.random() < 0.99:  # 10% chance to spawn a bonus
                 bonuses.append(Bonus(brick.rect.centerx, brick.rect.centery))
             if brick.hitpoints <= 0:
                 bricks.remove(brick)
