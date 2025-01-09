@@ -206,8 +206,12 @@ ball = Ball()
 bonuses = []
 active_bonuses = []
 
-# Lives
+# Lives/score
 lives = 3
+score = 0
+# Font for UI elements
+UIfont = pygame.font.SysFont("Digiface", 36)
+
 
 # Game loop
 running = True
@@ -302,6 +306,12 @@ while running:
     # Draw bonuses
     for bonus in bonuses:
         bonus.draw()
+
+    # Draw UI elements (lives, score)
+    lives_text = UIfont.render(f"Lives: {lives}", True, WHITE)
+    score_text = UIfont.render(f"Score: {score}", True, WHITE)
+    screen.blit(lives_text, (10, SCREEN_HEIGHT - lives_text.get_height()))
+    screen.blit(score_text, (SCREEN_WIDTH - score_text.get_width(), SCREEN_HEIGHT - score_text.get_height()))
 
     # Update display
     pygame.display.flip()
