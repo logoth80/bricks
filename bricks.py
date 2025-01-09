@@ -11,9 +11,9 @@ SCREEN_HEIGHT = 600
 # Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
+RED = (220, 0, 0)
 BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
+GREEN = (0, 160, 0)
 
 # Brick dimensions
 BRICK_WIDTH = 75
@@ -26,7 +26,7 @@ PADDLE_SPEED = 6
 
 # Ball dimensions
 BALL_RADIUS = 10
-BALL_SPEED = 5
+BALL_SPEED = 5.000000
 
 # Bonus dimensions
 BONUS_WIDTH = 20
@@ -44,7 +44,16 @@ mouse_x = 1000
 # Level definition
 level1array = []
 
-level1array.append([[0, 1, 1, 1, 2, 2, 1, 1, 1, 0], [1, 1, 2, 2, 3, 3, 2, 2, 1, 1], [0, 1, 3, 3, 0, 0, 3, 3, 1, 0]])
+level1array.append(
+    [
+        [0, 1, 1, 1, 2, 2, 1, 1, 1, 0],
+        [1, 1, 2, 2, 3, 3, 2, 2, 1, 1],
+        [0, 1, 3, 3, 0, 0, 3, 3, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    ]
+)
 
 
 # Brick class
@@ -54,11 +63,11 @@ class Brick:
         self.hitpoints = hitpoints
         self.maxhitpoints = hitpoints
         if hitpoints == 1:
-            self.color = (0, 255, 0)  # Green
+            self.color = (0, 200, 0)  # Green
         elif hitpoints == 2:
-            self.color = (0, 0, 255)  # Blue
+            self.color = (0, 0, 235)  # Blue
         elif hitpoints == 3:
-            self.color = (255, 0, 0)  # Red
+            self.color = (225, 0, 0)  # Red
         self.startr = self.color[0]
         self.startg = self.color[1]
         self.startb = self.color[2]
@@ -238,13 +247,16 @@ while running:
         # Adjust ball's horizontal speed based on where it hits the paddle
         paddle_center = paddle.rect.centerx
         hit_position = (ball.rect.centerx - paddle_center) / (paddle.rect.width / 2)
-        print(hit_position)
-        if hit_position < -0.7 or hit_position > 0.7:
-            ball.dx = BALL_SPEED * hit_position
+        print(hit_position, BALL_SPEED, ball.dx)
+        # if hit_position < -0.4 or hit_position > 0.4:
+        # ball.dx = BALL_SPEED * hit_position + ((1 - abs(hit_position)) * ball.dx)
+
+        print("after:", hit_position, BALL_SPEED, ball.dx)
         if ball.dx > BALL_SPEED:
             ball.dx = BALL_SPEED
         elif ball.dx < -BALL_SPEED:
             ball.dx = -BALL_SPEED
+        # ball.dy += -BALL_SPEED / (2 * (1 + abs(hit_position)))
 
     # Check collision with bricks
     for brick in bricks[:]:
@@ -309,13 +321,13 @@ while running:
 
     # Draw UI elements (lives, score)
     lives_text = UIfont.render(f"Lives: {lives}", True, WHITE)
-    score_text = UIfont.render(f"Score: {score}", True, WHITE)
+    score_text = UIfont.render(f"Score: {score}, {ball.dx:2.2f}, {ball.dy:2.2f}", True, WHITE)
     screen.blit(lives_text, (10, SCREEN_HEIGHT - lives_text.get_height()))
     screen.blit(score_text, (SCREEN_WIDTH - score_text.get_width(), SCREEN_HEIGHT - score_text.get_height()))
 
     # Update display
     pygame.display.flip()
-
+    BALL_SPEED += 0.0001
     # Cap frame rate
     clock.tick(60)
 
